@@ -25,7 +25,7 @@ gvapi
 
 .. |version| image:: https://img.shields.io/badge/version-0.1-red?style=flat-square
 
-.. |python| image:: https://img.shields.io/badge/python-3.4%20|%203.5%20|%203.6%20|%203.7%20|%203.8-blue?style=flat-square
+.. |python| image:: https://img.shields.io/badge/python-3.5%20|%203.6%20|%203.7%20|%203.8-blue?style=flat-square
 
 .. |requirements| image:: https://img.shields.io/badge/requirements-requests%20%26%20click-blue?style=flat-square
 
