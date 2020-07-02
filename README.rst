@@ -21,7 +21,7 @@ gvapi
 
 
 
-.. |coverage| image:: https://img.shields.io/badge/coverage-92%25-green?style=flat-square
+.. |coverage| image:: https://img.shields.io/badge/coverage-0%25-green?style=flat-square
 
 .. |version| image:: https://img.shields.io/badge/version-0.1-red?style=flat-square
 
