@@ -14,7 +14,7 @@ def read(filename):
 
 setup(
     name="gvapi",
-    version="0.1",
+    version="0.2",
     url="https://github.com/TitaniumHocker/gvapi",
     license="MIT",
 
@@ -23,6 +23,11 @@ setup(
 
     description="Неофициальная обертка для API godville.net.",
     long_description=read("README.rst"),
+
+    project_urls={
+        "Documentation": "https://gvapi.readthedocs.io/en/latest/",
+        "Issue tracker": "https://github.com/TitaniumHocker/gvapi/issues",
+    },
 
     packages=find_packages(exclude=('tests', 'docs',)),
 
