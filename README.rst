@@ -9,7 +9,7 @@ gvapi
 |pypgk|
 
 Неофициальная обертка для API игры `Годвилль <https://godville.net>`_, реализованная на Python.
-`Документация <https://gvapi.readthedocs.io/en/latest/>`_.
+`Документация <https://gvapi.readthedocs.io/ru/latest/>`_.
 
 Установка
 ---------
