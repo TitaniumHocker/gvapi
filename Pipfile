@@ -10,10 +10,12 @@ pylint = "*"
 jedi = "*"
 tox = "*"
 twine = "*"
+sphinx = "*"
 
 [packages]
 requests = "*"
 click = "*"
+pallets-sphinx-themes = "*"
 
 [requires]
 python_version = "3.7"

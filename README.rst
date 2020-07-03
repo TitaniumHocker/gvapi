@@ -5,6 +5,7 @@ gvapi
 |coverage|
 |version|
 |requirements|
+|doc|
 |pypgk|
 
 Неофициальная обертка для API игры `Годвилль <https://godville.net>`_, реализованная на Python.
@@ -44,3 +45,7 @@ gvapi
 .. |python| image:: https://img.shields.io/badge/python-3.5%20|%203.6%20|%203.7%20|%203.8-blue?style=flat-square
 
 .. |requirements| image:: https://img.shields.io/badge/requirements-requests%20%26%20click-blue?style=flat-square
+
+.. |doc| image:: https://readthedocs.org/projects/gvapi/badge/?version=latest
+   :target: https://gvapi.readthedocs.io/ru/latest/?badge=latest
+   :alt: Documentation Status
