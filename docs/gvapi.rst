@@ -1,26 +1,7 @@
-gvapi package
-=============
+Пакет gvapi API
+===============
 
-Submodules
-----------
-
-gvapi.cli module
-----------------
-
-.. automodule:: gvapi.cli
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gvapi.errors module
--------------------
-
-.. automodule:: gvapi.errors
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-gvapi.hero module
+Модуль gvapi.hero
 -----------------
 
 .. automodule:: gvapi.hero
@@ -28,7 +9,7 @@ gvapi.hero module
    :undoc-members:
    :show-inheritance:
 
-gvapi.pet module
+Модуль gvapi.pet
 ----------------
 
 .. automodule:: gvapi.pet
@@ -36,7 +17,7 @@ gvapi.pet module
    :undoc-members:
    :show-inheritance:
 
-gvapi.util module
+Модуль gvapi.util
 -----------------
 
 .. automodule:: gvapi.util
@@ -44,11 +25,18 @@ gvapi.util module
    :undoc-members:
    :show-inheritance:
 
+Модуль gvapi.cli
+----------------
 
-Module contents
----------------
+.. automodule:: gvapi.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. automodule:: gvapi
+Модуль gvapi.errors
+-------------------
+
+.. automodule:: gvapi.errors
    :members:
    :undoc-members:
    :show-inheritance:
