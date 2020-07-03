@@ -1,4 +1,4 @@
 # -*- coding: utf-8 -*-
-from .base import Hero
+from .hero import Hero
 
 __version__ = '0.1'
