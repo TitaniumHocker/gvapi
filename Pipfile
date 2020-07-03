@@ -7,6 +7,9 @@ verify_ssl = true
 pytest = "*"
 pytest-cov = "*"
 pylint = "*"
+jedi = "*"
+tox = "*"
+twine = "*"
 
 [packages]
 requests = "*"
