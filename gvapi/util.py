@@ -4,7 +4,13 @@ from gvapi import errors
 
 
 def syncing(func):
-    '''Декоратор для принудительной синхронизации при вызове функции.'''
+    '''Декоратор для принудительной синхронизации при вызове функции.
+
+    Args:
+        func (func): Декорируемая функция.
+
+    Returns: Функция, обернутая в декоратор.
+    '''
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         self.sync()
@@ -13,7 +19,17 @@ def syncing(func):
 
 
 def tokenized(func):
-    '''Декоратор для функций, требующих использования токена.'''
+    '''Декоратор для функций, требующих использования токена.
+
+    Args:
+        func (func): Декорируемая функция.
+
+    Returns: Функция, обернутая в декоратор.
+
+    Raises:
+        :py:class:`~gvapi.errors.NeedToken` в случае, если производится обращение к атрибуту,
+            доступнопу только при использовании токена, без использования токена.
+        :py:class:`~gvapi.errors.TokenWasResetted` в случае, если токен был сброшен.'''
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         if not self.token:
