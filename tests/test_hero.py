@@ -37,23 +37,17 @@ def test_tokenized_exceptions(name, mocked_get, monkeypatch):
 def test_basic(mocked_get_t, monkeypatch):
     monkeypatch.setattr(requests, 'get', mocked_get_t)
     hero = Hero('Mars', token='aoiwdjawodijadw1234')
-    assert hero.raw_data == mocked_get_t().json()
+    assert hero.data == mocked_get_t().json()
     assert hero.__repr__() == '<Hero {}>'.format(hero.name)
     assert hero.__str__() == 'Герой {}'.format(hero.name)
     assert hero.__getattribute__('_Hero__get_data')() == mocked_get_t().json()
     assert hero.token.startswith('****') and hero.token.endswith('1234')
 
-    date = hero._last_upd
-    hero._last_upd = datetime.now() - timedelta(hours=1)
-    assert hero.from_last_updated == 60**2
-    hero.sync()
-    assert hero._last_upd != date
-
     assert hero.threshold == 300
     hero.threshold = 200
     assert hero.threshold == 200
 
-    hero.raw_data['gender'] = 'female'
+    hero.data['gender'] = 'female'
     assert hero.__str__() == 'Героиня {}'.format(hero.name)
 
 

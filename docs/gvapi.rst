@@ -25,14 +25,6 @@
    :undoc-members:
    :show-inheritance:
 
-Модуль gvapi.cli
-----------------
-
-.. automodule:: gvapi.cli
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Модуль gvapi.errors
 -------------------
 
