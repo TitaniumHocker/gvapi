@@ -16,15 +16,11 @@ class Hero:
 
     Attributes:
         god (str): Имя бога.
-        __token (str, None): API токен.
-        _base_url (str): URL для доступа к API.
-        _last_upd (py:class:`~datetime.datetime`): Время последнего обновления данных.
-        _data (dict): Словарь с последними полученными данными.
-        __threshold (int): Задержка для обнолвения данных в секундах. Не может быть меньше 60.
-        __need_token_attrs (list): Атрибуты, для доступа к которым необходимо использовать токен.
+        base_url (str): URL для доступа к API.
+        data (dict): Словарь с последними полученными данными.
         pet (:py:class:`~gvapi.pet.Pet`): Экземпляр класса `Pet`, описывающий питомца.
 
-    Args:
+    Arguments:
         god (str): Имя бога.
         token (str, optional): Токен для доступа к API. Если не указан,
             то обращение производится к открытому API.
@@ -36,12 +32,13 @@ class Hero:
     def __init__(self, god, token=None, api_url='https://godville.net/gods/api', threshold=300):
         if threshold < 60:
             raise errors.MinThresholdException('Параметр threshold не может быть меньше 60 секунд.')
-        self.god = god
         self.__token = token
         self.__threshold = threshold
-        self._base_url = api_url
-        self._last_upd = datetime.now()
-        self._data = self.__get_data()
+        self.__last_upd = datetime.now()
+        self.__lock = False
+        self.base_url = api_url
+        self.god = god
+        self.data = self.__get_data()
         self.pet = Pet(self)
 
 
@@ -56,9 +53,15 @@ class Hero:
 
 
     @property
-    def raw_data(self):
-        '''dict: Словарь с `сырыми` данными ответа API.'''
-        return self._data
+    def last_upd(self):
+        ''':py:class:`datetime`: Время последнего обновления данных.'''
+        return self.__last_upd
+
+
+    @property
+    def lock(self):
+        '''bool: Заблокированы ли запросы к API.'''
+        return self.__lock
 
 
     def sync(self):
@@ -68,9 +71,9 @@ class Hero:
         Синхронизация производится только в случае если прошла
         задержка обновления данных(`threshold`).
         '''
-        if self.from_last_updated > self.threshold:
-            self._data = self.__get_data()
-            self._last_upd = datetime.now()
+        if self.from_last_updated > self.threshold and not self.lock:
+            self.data = self.__get_data()
+            self.__last_upd = datetime.now()
 
 
     def __get_data(self):
@@ -82,13 +85,18 @@ class Hero:
             Словать с данными полученными от API.
 
         Raises:
-            APIUnavailable: в случае недоступности API.
-            UnexpectedAPIResponse: в случае получения неожиданного ответа от API.
+            :py:class:`~gvapi.errors.APIUnavailable`
+                в случае недоступности API.
+
+            :py:class:`~gvapi.errors.UnexpectedAPIResponse`
+                в случае получения неожиданного ответа от API.
         '''
+        self.__lock = True
+
         if self.__token:
-            url = '{}/{}/{}'.format(self._base_url, quote(self.god, safe=''), self.__token)
+            url = '{}/{}/{}'.format(self.base_url, quote(self.god, safe=''), self.__token)
         else:
-            url = '{}/{}'.format(self._base_url, quote(self.god, safe=''))
+            url = '{}/{}'.format(self.base_url, quote(self.god, safe=''))
 
         try:
             response = requests.get(url)
@@ -107,6 +115,7 @@ class Hero:
                 'Неожиданный ответ API(код {}) :{}'.format(response.status_code, response.text)
             )
 
+        self.__lock = False
         return data
 
 
@@ -126,7 +135,7 @@ class Hero:
     @property
     def from_last_updated(self):
         '''int: Количество секунд, прошедших с последнего обновления данных.'''
-        return int(datetime.now().timestamp() - self._last_upd.timestamp())
+        return int(datetime.now().timestamp() - self.__last_upd.timestamp())
 
 
     @property
@@ -142,14 +151,14 @@ class Hero:
     @syncing
     def name(self):
         '''str: Имя героя.'''
-        return self._data['name']
+        return self.data['name']
 
 
     @property
     @syncing
     def gender(self):
         '''str: Пол героя.'''
-        return 'муж' if self._data['gender'] == 'male' else 'жен'
+        return 'муж' if self.data['gender'] == 'male' else 'жен'
 
 
     @property
@@ -165,14 +174,14 @@ class Hero:
     @tokenized
     def health(self):
         '''int: Количество очков здоровья героя.'''
-        return self._data['health']
+        return self.data['health']
 
 
     @property
     @syncing
     def max_health(self):
         '''int: Максимальное количество очков здоровья героя.'''
-        return self._data['max_health']
+        return self.data['max_health']
 
 
     @property
@@ -188,7 +197,7 @@ class Hero:
     @tokenized
     def gold(self):
         '''str: Примерное количество золота.'''
-        return self._data['gold_approx']
+        return self.data['gold_approx']
 
 
     # TODO
@@ -197,7 +206,6 @@ class Hero:
     @tokenized
     def goldf(self):
         '''float: Приверное количество золота, отформатированное в тысячи.'''
-        pass
 
 
     @property
@@ -205,7 +213,7 @@ class Hero:
     @tokenized
     def activatables(self):
         '''list: Список активируемых предметов.'''
-        return self._data['activatables']
+        return self.data['activatables']
 
 
     @property
@@ -213,7 +221,7 @@ class Hero:
     @tokenized
     def is_fighting(self):
         '''bool: Находится ли герой в бою(арена, босс, заплыв, подземка).'''
-        return self._data['arena_fight']
+        return self.data['arena_fight']
 
 
     @property
@@ -221,7 +229,7 @@ class Hero:
     @tokenized
     def fight_type(self):
         '''str: Тип боя'''
-        return self._data['fight_type'] if self.is_fighting else ''
+        return self.data['fight_type'] if self.is_fighting else ''
 
 
     @property
@@ -229,7 +237,7 @@ class Hero:
     @tokenized
     def aura(self):
         '''str: Аура, если отсутствует - пустая строка'''
-        return self._data.get('aura', '')
+        return self.data.get('aura', '')
 
 
     @property
@@ -237,7 +245,7 @@ class Hero:
     @tokenized
     def diary_last(self):
         '''str: Последняя запись в дневнике.'''
-        return self._data['diary_last']
+        return self.data['diary_last']
 
 
     @property
@@ -245,7 +253,7 @@ class Hero:
     @tokenized
     def distance(self):
         '''int: Дистанция до столицы, при нахождении в любом городе - 0.'''
-        return self._data['distance']
+        return self.data['distance']
 
 
     @property
@@ -253,7 +261,7 @@ class Hero:
     @tokenized
     def exp(self):
         '''int: Прогресс опыта.'''
-        return self._data['exp_progress']
+        return self.data['exp_progress']
 
 
     @property
@@ -261,7 +269,7 @@ class Hero:
     @tokenized
     def expired(self):
         '''bool: Флаг актуальности данных, True в случае, когда данные неакутальны.'''
-        return self._data.get('expired', False)
+        return self.data.get('expired', False)
 
 
     @property
@@ -269,14 +277,14 @@ class Hero:
     @tokenized
     def godpower(self):
         '''int: Количество праны.'''
-        return self._data['godpower']
+        return self.data['godpower']
 
 
     @property
     @syncing
     def max_godpower(self):
         '''int: Максимальное количество праны.'''
-        return 200 if self._data.get('savings_completed_at', None) else 100
+        return 200 if self.data.get('savings_completed_at', None) else 100
 
 
     @property
@@ -292,14 +300,14 @@ class Hero:
     @tokenized
     def inventory_num(self):
         '''int: Количество предметов в инвентаре.'''
-        return self._data['inventory_num']
+        return self.data['inventory_num']
 
 
     @property
     @syncing
     def inventory_max_num(self):
         '''int: Максимальное количество предметов в инвентаре.'''
-        return self._data['inventory_max_num']
+        return self.data['inventory_max_num']
 
 
     @property
@@ -316,7 +324,7 @@ class Hero:
     @tokenized
     def quest_progress(self):
         '''float: Процесс выполнения задания в процентах.'''
-        return self._data.get('quest_progress', 0.0)
+        return self.data.get('quest_progress', 0.0)
 
 
     @property
@@ -324,7 +332,7 @@ class Hero:
     @tokenized
     def quest(self):
         '''str: Текст текущего задания.'''
-        return self._data.get('quest', '')
+        return self.data.get('quest', '')
 
 
     @property
@@ -332,153 +340,153 @@ class Hero:
     @tokenized
     def town_name(self):
         '''str: Имя города, пустая строка если в поле или в бою.'''
-        return self._data.get('town_name', '')
+        return self.data.get('town_name', '')
 
 
     @property
     @syncing
     def words(self):
         '''int: Количество слов в книге.'''
-        return self._data.get('words', 0)
+        return self.data.get('words', 0)
 
 
     @property
     @syncing
     def ark(self):
         '''tuple: Число тварей(ж, м)'''
-        if not self._data.get('ark_f', None):
+        if not self.data.get('ark_f', None):
             raise errors.TheArkIsUndone('Ковчег еще не достроен.')
-        return (self._data['ark_f'], self._data['ark_m'])
+        return (self.data['ark_f'], self.data['ark_m'])
 
 
     @property
     @syncing
     def savings(self):
         '''str: Примерное число сбережений.'''
-        if not self._data.get('temple_completed_at', None):
+        if not self.data.get('temple_completed_at', None):
             raise errors.TheTempleIsUndone('Храм еще не построен.')
-        return self._data['savings']
+        return self.data['savings']
 
 
     @property
     @syncing
     def t_level(self):
         '''int: Троговый уровень.'''
-        if not self._data.get('savings_completed_at', None):
+        if not self.data.get('savings_completed_at', None):
             raise errors.TheSavingsInUndone('Пенсия еще не собрана.')
-        return self._data.get('t_level', 0)
+        return self.data.get('t_level', 0)
 
 
     @property
     @syncing
     def arena(self):
         '''tuple: число побед и поражений на арене.'''
-        return (self._data['arena_won'], self._data['arena_lost'])
+        return (self.data['arena_won'], self.data['arena_lost'])
 
 
     @property
     @syncing
     def ark_completed_at(self):
         '''str: Дата постройки ковчега.'''
-        if not self._data.get('ark_completed_at', None):
+        if not self.data.get('ark_completed_at', None):
             raise errors.TheArkIsUndone('Ковчег еще не построен.')
-        return self._data['ark_completed_at']
+        return self.data['ark_completed_at']
 
 
     @property
     @syncing
     def alignment(self):
         '''str: Характер героя.'''
-        return self._data['alignment']
+        return self.data['alignment']
 
 
     @property
     @syncing
     def bricks(self):
         '''int: Число кирпичей для храма.'''
-        return self._data['bricks_cnt']
+        return self.data['bricks_cnt']
 
 
     @property
     @syncing
     def bricks_percent(self):
         '''float: Число кирпичей для храма в процентах.'''
-        return self._data['bricks_cnt'] / 1000
+        return self.data['bricks_cnt'] / 1000
 
 
     @property
     @syncing
     def clan(self):
         '''str: Название гильдии героя.'''
-        return self._data['clan']
+        return self.data['clan']
 
 
     @property
     @syncing
     def clan_pos(self):
         '''str: Ранг героя в гильдии.'''
-        return self._data['clan_position']
+        return self.data['clan_position']
 
 
     @property
     @syncing
     def level(self):
         '''int: Уровень героя.'''
-        return self._data['level']
+        return self.data['level']
 
 
     @property
     @syncing
     def motto(self):
         '''str: Девиз героя.'''
-        return self._data.get('motto', '')
+        return self.data.get('motto', '')
 
 
     @property
     @syncing
     def savings_completed_at(self):
         '''str: Дата окончания сбора пенсии.'''
-        if not self._data.get('savings_completed_at', None):
+        if not self.data.get('savings_completed_at', None):
             raise errors.TheSavingsInUndone('Сбережения еще не собраны.')
-        return self._data['savings_completed_at']
+        return self.data['savings_completed_at']
 
 
     @property
     @syncing
     def shop_name(self):
         '''str: Название лавки, только у пенсионеров.'''
-        if not self._data.get('savings_completed_at', None):
+        if not self.data.get('savings_completed_at', None):
             raise errors.TheSavingsInUndone('Сбережения еще не собраны.')
-        return self._data.get('shop_name', '')
+        return self.data.get('shop_name', '')
 
 
     @property
     @syncing
     def temple_completed_at(self):
         '''str: Когда был достроен храм.'''
-        if not self._data.get('temple_completed_at', None):
+        if not self.data.get('temple_completed_at', None):
             raise errors.TheTempleIsUndone('Храм еще не построен.')
-        return self._data['temple_completed_at']
+        return self.data['temple_completed_at']
 
 
     @property
     @syncing
     def wood_count(self):
         '''int: Количество поленьев.'''
-        if not self._data.get('temple_completed_at', None):
+        if not self.data.get('temple_completed_at', None):
             raise errors.TheTempleIsUndone('Храм еще не построен.')
-        return self._data['wood_cnt']
+        return self.data['wood_cnt']
 
 
     @property
     @syncing
     def boss_name(self):
         '''str: Имя собранного в лаборатории босса.'''
-        return self._data.get('boss_name', None)
+        return self.data.get('boss_name', None)
 
 
     @property
     @syncing
     def boss_power(self):
         '''str: Мощь собранного в лаборатории босса.'''
-        return self._data.get('boss_power', None)
+        return self.data.get('boss_power', None)

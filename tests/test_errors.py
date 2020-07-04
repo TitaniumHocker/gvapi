@@ -49,10 +49,10 @@ def test_unexpected_json(monkeypatch):
 def test_resetted(mocked_get_t, monkeypatch):
     monkeypatch.setattr(requests, 'get', mocked_get_t)
     hero = Hero('Mars', token='awuidhawudihaiwudh')
-    health = hero.raw_data.pop('health')
+    health = hero.data.pop('health')
     with pytest.raises(errors.TokenWasResetted):
         hero.is_alive
-    hero.raw_data['health'] = health
+    hero.data['health'] = health
 
 
 def test_need_token(mocked_get, monkeypatch):

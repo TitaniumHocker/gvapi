@@ -4,11 +4,7 @@
 class Pet:
     '''Класс питомца
 
-    Описывает питомца.
-
-    Attributes:
-        __hero (:py:class:`~gvapi.hero.Hero`): Экземпляр класса героя, которому принадлежит
-            данный питомец.
+    Данный класс описывает питомца.
 
     Args:
         hero (:py:class:`~gvapi.hero.Hero`): Экземпляр класса героя, которому принадлежит
@@ -28,22 +24,22 @@ class Pet:
     @property
     def name(self):
         '''str: Имя питомца.'''
-        return self.__hero._data['pet']['pet_name']
+        return self.__hero.data['pet']['pet_name']
 
 
     @property
     def class_name(self):
         '''str: Вид питомца.'''
-        return self.__hero._data['pet']['pet_class']
+        return self.__hero.data['pet']['pet_class']
 
 
     @property
     def level(self):
         '''int: Уровень питомца.'''
-        return self.__hero._data['pet']['pet_level']
+        return self.__hero.data['pet']['pet_level']
 
 
     @property
     def wounded(self):
         '''bool: Контужен ли питомец.'''
-        return self.__hero._data['pet'].get('wounded', False)
+        return self.__hero.data['pet'].get('wounded', False)

@@ -5,7 +5,9 @@
 
 
 class GVAPIException(Exception):
-    '''Общее исключение пакета.'''
+    '''Общее исключение пакета.
+    От данного исключения наследуются остальные исключения пакета.
+    '''
 
 
 class APIUnavailable(GVAPIException):
