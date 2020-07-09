@@ -1,7 +1,4 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 from gvapi import Hero
 
 hero = Hero('Mars', token='awudhawiudh')
-
-print('Золото: {}, Кирпичи: {}'.format(hero.gold, hero.bricks))
+print('ЗЛ: ~{}k, КП: {:.1f}%'.format(hero.goldf, hero.bricks_percent))
