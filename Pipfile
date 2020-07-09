@@ -13,6 +13,7 @@ sphinx = "*"
 coverage-badge = "*"
 pallets-sphinx-themes = "*"
 mypy = "*"
+freezegun = "*"
 
 [packages]
 requests = "*"
