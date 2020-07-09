@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime, timedelta
 import pytest
 
 from gvapi import Hero

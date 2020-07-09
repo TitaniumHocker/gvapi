@@ -50,7 +50,7 @@ def test_resetted(mocked_get_t, monkeypatch):
     monkeypatch.setattr(requests, 'get', mocked_get_t)
     hero = Hero('Mars', token='awuidhawudihaiwudh')
     health = hero.data.pop('health')
-    with pytest.raises(errors.TokenWasResetted):
+    with pytest.raises(errors.InvalidToken):
         hero.is_alive
     hero.data['health'] = health
 

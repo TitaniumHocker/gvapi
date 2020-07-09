@@ -40,8 +40,9 @@ def tokenized(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         if not self.token:
-            raise errors.NeedToken('Для доступа к данному атрибуту необходим токен.')
+            raise errors.NeedToken('Для доступа к данному атрибуту необходим токен. '
+                                   'Получить токен: https://godville.net/user/profile')
         if 'health' not in self.data.keys():
-            raise errors.TokenWasResetted('Токен был сброшен, необходимо обновить токен.')
+            raise errors.InvalidToken('Токен не действителен или был сброшен. Необходимо обновить.')
         return func(self, *args, **kwargs)
     return wrapper

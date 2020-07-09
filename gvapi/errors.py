@@ -18,8 +18,8 @@ class UnexpectedAPIResponse(GVAPIException):
     '''Непредвиденный ответ API.'''
 
 
-class TokenWasResetted(GVAPIException):
-    '''Токен был сброшен и требует обновления.'''
+class InvalidToken(GVAPIException):
+    '''Токен невалилен или был сброшен.'''
 
 
 class NeedToken(GVAPIException):
