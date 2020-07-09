@@ -16,6 +16,10 @@ class UnexpectedResponseCode:
     text = 'some shit'
 
 
+class Response404:
+    status_code = 404
+
+
 class UnexpectedResponseJson:
     status_code = 200
     text = 'some shit'
@@ -23,6 +27,12 @@ class UnexpectedResponseJson:
     @staticmethod
     def json():
         raise json.decoder.JSONDecodeError('a', 'b', 3)
+
+
+def test_unknown_god(monkeypatch):
+    monkeypatch.setattr(requests, 'get', lambda *args, **kwargs: Response404())
+    with pytest.raises(errors.UnknownGod):
+        hero = Hero('someone')
 
 
 def test_unavailable(monkeypatch):
@@ -46,11 +56,11 @@ def test_unexpected_json(monkeypatch):
         hero.sync()
 
 
-def test_resetted(mocked_get_t, monkeypatch):
+def test_invalidtoken(mocked_get_t, monkeypatch):
     monkeypatch.setattr(requests, 'get', mocked_get_t)
     hero = Hero('Mars', token='awuidhawudihaiwudh')
     health = hero.data.pop('health')
-    with pytest.raises(errors.TokenWasResetted):
+    with pytest.raises(errors.InvalidToken):
         hero.is_alive
     hero.data['health'] = health
 
@@ -71,11 +81,17 @@ def test_min_threshold(mocked_get, monkeypatch):
         hero.threshold = 1
 
 
-def test_temple(mocked_get, monkeypatch):
-    monkeypatch.setattr(requests, 'get', mocked_get)
-    hero = Hero('Mars')
+def test_temple(mocked_get_t, monkeypatch):
+    monkeypatch.setattr(requests, 'get', mocked_get_t)
+    hero = Hero('Mars', token='adwad')
     with pytest.raises(errors.TheTempleIsUndone):
         hero.temple_completed_at
+    with pytest.raises(errors.TheTempleIsUndone):
+        hero.savings
+    with pytest.raises(errors.TheTempleIsUndone):
+        hero.ark
+    with pytest.raises(errors.TheTempleIsUndone):
+        hero.wood_count
 
 
 def test_ark(mocked_get, monkeypatch):
@@ -90,3 +106,7 @@ def test_savings(mocked_get, monkeypatch):
     hero = Hero('Mars')
     with pytest.raises(errors.TheSavingsInUndone):
         hero.savings_completed_at
+    with pytest.raises(errors.TheSavingsInUndone):
+        hero.t_level
+    with pytest.raises(errors.TheSavingsInUndone):
+        hero.shop_name

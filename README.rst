@@ -38,14 +38,16 @@ gvapi
 
 .. |pypgk| image:: https://github.com/TitaniumHocker/gvapi/workflows/Python%20package/badge.svg?branch=master
 
-.. |coverage| image:: https://img.shields.io/badge/coverage-92%25-green?style=flat-square
+.. |coverage| image:: https://raw.githubusercontent.com/TitaniumHocker/gvapi/master/media/coverage.svg
 
-.. |version| image:: https://img.shields.io/badge/version-0.2-red?style=flat-square
+.. |python| image:: https://img.shields.io/badge/python-3.5%20|%203.6%20|%203.7%20|%203.8-blue?style=flat
 
-.. |python| image:: https://img.shields.io/badge/python-3.5%20|%203.6%20|%203.7%20|%203.8-blue?style=flat-square
-
-.. |requirements| image:: https://img.shields.io/badge/requirements-requests%20%26%20click-blue?style=flat-square
+.. |requirements| image:: https://img.shields.io/badge/requirements-requests%20%26%20click-blue?style=flat
 
 .. |doc| image:: https://readthedocs.org/projects/gvapi/badge/?version=latest
    :target: https://gvapi.readthedocs.io/ru/latest/?badge=latest
    :alt: Documentation Status
+
+.. |version| image:: https://badge.fury.io/py/gvapi.svg
+   :target: https://badge.fury.io/py/gvapi
+   :alt: Latest Version

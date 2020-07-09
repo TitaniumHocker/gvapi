@@ -8,13 +8,13 @@ import re
 def read(filename):
     filename = os.path.join(os.path.dirname(__file__), filename)
     text_type = type(u"")
-    with io.open(filename, mode="r", encoding='utf-8') as fd:
-        return re.sub(text_type(r':[a-z]+:`~?(.*?)`'), text_type(r'``\1``'), fd.read())
+    with io.open(filename, mode="r", encoding='utf-8') as file_desc:
+        return re.sub(text_type(r':[a-z]+:`~?(.*?)`'), text_type(r'``\1``'), file_desc.read())
 
 
 setup(
     name="gvapi",
-    version="0.3",
+    version="0.4",
     url="https://github.com/TitaniumHocker/gvapi",
     license="MIT",
 
@@ -25,11 +25,11 @@ setup(
     long_description=read("README.rst"),
 
     project_urls={
-        "Documentation": "https://gvapi.readthedocs.io/en/latest/",
+        "Documentation": "https://gvapi.rtfd.io/",
         "Issue tracker": "https://github.com/TitaniumHocker/gvapi/issues",
     },
 
-    packages=find_packages(exclude=('tests', 'docs',)),
+    packages=find_packages(exclude=('tests', 'docs', 'examples')),
 
     install_requires=[
         'requests',

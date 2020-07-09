@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime, timedelta
 import pytest
+import freezegun
 
 from gvapi import Hero
 from gvapi import errors
 from gvapi.hero import requests
+
+
+FREEZED_NOW = datetime.now()
+FREEZED_NOW_PLUS = datetime.now() + timedelta(hours=1)
 
 
 def test_create_without_token(mocked_get, monkeypatch):
@@ -32,6 +37,16 @@ def test_tokenized_exceptions(name, mocked_get, monkeypatch):
     with pytest.raises(errors.NeedToken):
         hero.__getattribute__(name)
 
+
+@freezegun.freeze_time(FREEZED_NOW)
+def test_feezed(mocked_get, mocked_get_top, monkeypatch):
+    monkeypatch.setattr(requests, 'get', mocked_get)
+    hero = Hero('Mars')
+    assert hero.last_upd == FREEZED_NOW
+    with freezegun.freeze_time(FREEZED_NOW_PLUS):
+        monkeypatch.setattr(requests, 'get', mocked_get_top)
+        hero.sync()
+        assert hero.last_upd == FREEZED_NOW_PLUS
 
 
 def test_basic(mocked_get_t, monkeypatch):
@@ -71,7 +86,28 @@ def test_nontokenized_attributes(mocked_get, monkeypatch):
     assert hero.arena == (data['arena_won'], data['arena_lost'])
     assert hero.alignment == data['alignment']
     assert hero.bricks == data['bricks_cnt']
-    assert hero.bricks_percent == data['bricks_cnt'] / 1000
+    assert hero.bricks_percent == data['bricks_cnt'] / 1000 * 100
+
+
+def test_top_attributes(mocked_get_top, monkeypatch):
+    monkeypatch.setattr(requests, 'get', mocked_get_top)
+    hero = Hero('Mars')
+    data = mocked_get_top().json()
+
+    def dparse(ds):
+        zone = ds[-6::]
+        return datetime.strptime(ds.replace(zone, zone.replace(':', '')),
+                                 '%Y-%m-%dT%H:%M:%S%z')
+
+    assert hero.savings == '30000 тысяч'
+    assert hero.t_level == 18
+    assert hero.shop_name == 'Эволюция лайф'
+    assert hero.boss_name == 'Обомлев'
+    assert hero.boss_power == 211
+    assert hero.wood_count == 3456
+    assert hero.temple_completed_at == dparse(data['temple_completed_at'])
+    assert hero.ark_completed_at == dparse(data['ark_completed_at'])
+    assert hero.savings_completed_at == dparse(data['savings_completed_at'])
 
 
 def test_tokenized_attributes(mocked_get_t, monkeypatch):
@@ -99,3 +135,14 @@ def test_tokenized_attributes(mocked_get_t, monkeypatch):
     assert hero.quest_progress == data['quest_progress']
     assert hero.quest == data['quest']
     assert hero.town_name == data['town_name']
+
+
+def test_goldf(mocked_get_t, mocked_get_top_t, monkeypatch):
+    monkeypatch.setattr(requests, 'get', mocked_get_t)
+    hero = Hero('Mars', token='adwadwad')
+    assert hero.goldf == 0.3
+    with freezegun.freeze_time(datetime.now() + timedelta(hours=1)):
+        monkeypatch.setattr(requests, 'get', mocked_get_top_t)
+        hero.sync()
+        assert hero.goldf == 1.0
+

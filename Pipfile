@@ -9,13 +9,15 @@ pytest-cov = "*"
 pylint = "*"
 jedi = "*"
 tox = "*"
-twine = "*"
 sphinx = "*"
+coverage-badge = "*"
+pallets-sphinx-themes = "*"
+mypy = "*"
+freezegun = "*"
 
 [packages]
 requests = "*"
 click = "*"
-pallets-sphinx-themes = "*"
 
 [requires]
 python_version = "3.7"

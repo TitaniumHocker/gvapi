@@ -18,11 +18,11 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'gvapi'
-copyright = '2020, Titanium Hocker(Ivan Fedorov)'
+copyright = '2020, Ivan Fedorov'
 author = 'Titanium Hocker(Ivan Fedorov)'
 
 # The full version, including alpha/beta/rc tags
-release = '0.3'
+release = '0.4'
 
 
 # -- General configuration ---------------------------------------------------

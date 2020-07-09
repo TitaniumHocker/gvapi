@@ -9,6 +9,9 @@ class GVAPIException(Exception):
     От данного исключения наследуются остальные исключения пакета.
     '''
 
+class UnknownGod(GVAPIException):
+    '''Бог не был найден.'''
+
 
 class APIUnavailable(GVAPIException):
     '''API недоступно.'''
@@ -18,8 +21,8 @@ class UnexpectedAPIResponse(GVAPIException):
     '''Непредвиденный ответ API.'''
 
 
-class TokenWasResetted(GVAPIException):
-    '''Токен был сброшен и требует обновления.'''
+class InvalidToken(GVAPIException):
+    '''Токен невалилен или был сброшен.'''
 
 
 class NeedToken(GVAPIException):
