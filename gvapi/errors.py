@@ -9,6 +9,9 @@ class GVAPIException(Exception):
     От данного исключения наследуются остальные исключения пакета.
     '''
 
+class UnknownGod(GVAPIException):
+    '''Бог не был найден.'''
+
 
 class APIUnavailable(GVAPIException):
     '''API недоступно.'''

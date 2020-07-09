@@ -105,6 +105,9 @@ class Hero:
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as exc:
             raise errors.APIUnavailable('Обращение к API закончилось неудачей: {}'.format(exc))
 
+        if response.status_code == 404:
+            raise errors.UnknownGod('Бог с таким именем не был найден.')
+
         if response.status_code != 200:
             raise errors.UnexpectedAPIResponse(
                 'Неожиданный ответ API(код {}) :{}'.format(response.status_code, response.text)

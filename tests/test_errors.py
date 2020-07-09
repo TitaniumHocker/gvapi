@@ -16,6 +16,10 @@ class UnexpectedResponseCode:
     text = 'some shit'
 
 
+class Response404:
+    status_code = 404
+
+
 class UnexpectedResponseJson:
     status_code = 200
     text = 'some shit'
@@ -23,6 +27,12 @@ class UnexpectedResponseJson:
     @staticmethod
     def json():
         raise json.decoder.JSONDecodeError('a', 'b', 3)
+
+
+def test_unknown_god(monkeypatch):
+    monkeypatch.setattr(requests, 'get', lambda *args, **kwargs: Response404())
+    with pytest.raises(errors.UnknownGod):
+        hero = Hero('someone')
 
 
 def test_unavailable(monkeypatch):
