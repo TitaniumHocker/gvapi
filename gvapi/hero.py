@@ -213,8 +213,8 @@ class Hero:
         words = self.gold.split()[1::]
         mul = 1 if words[-1].startswith('тыс') else 0.1
         if len(words) == 1:
-            return 1.0 * mul
-        return float(words[0]) * mul
+            return round(1.0 * mul, 2)
+        return round(float(words[0]) * mul, 2)
 
 
 
@@ -365,7 +365,7 @@ class Hero:
     def ark(self) -> Tuple[int, int]:
         '''tuple: Число тварей(ж, м)'''
         if not self.data.get('ark_f', None):
-            raise errors.TheArkIsUndone('Ковчег еще не достроен.')
+            raise errors.TheTempleIsUndone('Храм еще не достроен')
         return (self.data['ark_f'], self.data['ark_m'])
 
 
@@ -396,11 +396,14 @@ class Hero:
 
     @property # type: ignore
     @syncing
-    def ark_completed_at(self) -> str:
+    def ark_completed_at(self) -> datetime:
         '''str: Дата постройки ковчега.'''
         if not self.data.get('ark_completed_at', None):
             raise errors.TheArkIsUndone('Ковчег еще не построен.')
-        return self.data['ark_completed_at']
+        date_s = self.data['ark_completed_at']
+        zone = date_s[-6::]
+        return datetime.strptime(date_s.replace(zone, zone.replace(':', '')),
+                                 '%Y-%m-%dT%H:%M:%S%z')
 
 
     @property # type: ignore
@@ -454,11 +457,14 @@ class Hero:
 
     @property # type: ignore
     @syncing
-    def savings_completed_at(self) -> str:
+    def savings_completed_at(self) -> datetime:
         '''str: Дата окончания сбора пенсии.'''
         if not self.data.get('savings_completed_at', None):
             raise errors.TheSavingsInUndone('Сбережения еще не собраны.')
-        return self.data['savings_completed_at']
+        date_s = self.data['savings_completed_at']
+        zone = date_s[-6::]
+        return datetime.strptime(date_s.replace(zone, zone.replace(':', '')),
+                                 '%Y-%m-%dT%H:%M:%S%z')
 
 
     @property # type: ignore
@@ -472,11 +478,14 @@ class Hero:
 
     @property # type: ignore
     @syncing
-    def temple_completed_at(self) -> str:
+    def temple_completed_at(self) -> datetime:
         '''str: Когда был достроен храм.'''
         if not self.data.get('temple_completed_at', None):
             raise errors.TheTempleIsUndone('Храм еще не построен.')
-        return self.data['temple_completed_at']
+        date_s = self.data['temple_completed_at']
+        zone = date_s[-6::]
+        return datetime.strptime(date_s.replace(zone, zone.replace(':', '')),
+                                 '%Y-%m-%dT%H:%M:%S%z')
 
 
     @property # type: ignore
