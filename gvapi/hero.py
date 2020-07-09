@@ -200,12 +200,17 @@ class Hero:
         return self.data['gold_approx']
 
 
-    # TODO
     @property
     @syncing
     @tokenized
     def goldf(self):
         '''float: Приверное количество золота, отформатированное в тысячи.'''
+        words = self.gold.split()[1::]
+        mul = 1 if words[-1].startswith('тыс') else 0.1
+        if len(words) == 1:
+            return 1.0 * mul
+        return float(words[0]) * mul
+
 
 
     @property
@@ -411,7 +416,7 @@ class Hero:
     @syncing
     def bricks_percent(self):
         '''float: Число кирпичей для храма в процентах.'''
-        return self.data['bricks_cnt'] / 1000
+        return self.data['bricks_cnt'] / 1000 * 100
 
 
     @property

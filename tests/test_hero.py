@@ -71,7 +71,7 @@ def test_nontokenized_attributes(mocked_get, monkeypatch):
     assert hero.arena == (data['arena_won'], data['arena_lost'])
     assert hero.alignment == data['alignment']
     assert hero.bricks == data['bricks_cnt']
-    assert hero.bricks_percent == data['bricks_cnt'] / 1000
+    assert hero.bricks_percent == data['bricks_cnt'] / 1000 * 100
 
 
 def test_tokenized_attributes(mocked_get_t, monkeypatch):
