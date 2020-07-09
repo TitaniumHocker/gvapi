@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from typing import Callable, Any
 from functools import wraps
 from gvapi import errors
 
 
-def syncing(func):
+def syncing(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
     '''Декоратор для принудительной синхронизации при вызове метода.
 
     Args:
@@ -19,7 +20,7 @@ def syncing(func):
     return wrapper
 
 
-def tokenized(func):
+def tokenized(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
     '''Декоратор для метода, требующего использования токена.
 
     Args:

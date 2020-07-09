@@ -12,6 +12,7 @@ tox = "*"
 sphinx = "*"
 coverage-badge = "*"
 pallets-sphinx-themes = "*"
+mypy = "*"
 
 [packages]
 requests = "*"
