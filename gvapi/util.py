@@ -34,7 +34,7 @@ def tokenized(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
             в случае, если производится обращение к атрибуту, доступнопу только при использовании
             токена, без использования токена.
 
-        :py:class:`~gvapi.errors.TokenWasResetted`
+        :py:class:`~gvapi.errors.InvalidToken`
             в случае, если токен был сброшен.
         '''
     @wraps(func)
