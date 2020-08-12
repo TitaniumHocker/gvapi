@@ -103,22 +103,18 @@ class Hero:
         try:
             response = requests.get(url)
         except (requests.exceptions.ConnectTimeout, requests.exceptions.ConnectionError) as exc:
-            raise errors.APIUnavailable('Обращение к API закончилось неудачей: {}'.format(exc))
+            raise errors.APIUnavailable(exc)
 
         if response.status_code == 404:
-            raise errors.UnknownGod('Бог с таким именем не был найден.')
+            raise errors.UnknownGod(self.god)
 
         if response.status_code != 200:
-            raise errors.UnexpectedAPIResponse(
-                'Неожиданный ответ API(код {}) :{}'.format(response.status_code, response.text)
-            )
+            raise errors.UnexpectedAPIResponse(response)
 
         try:
             data = response.json()
         except json.decoder.JSONDecodeError:
-            raise errors.UnexpectedAPIResponse(
-                'Неожиданный ответ API(код {}) :{}'.format(response.status_code, response.text)
-            )
+            raise errors.UnexpectedAPIResponse(response)
 
         self.__lock = False
         return data
@@ -376,6 +372,14 @@ class Hero:
         if not self.data.get('temple_completed_at', None):
             raise errors.TheTempleIsUndone('Храм еще не построен.')
         return self.data['savings']
+
+
+    @property # type: ignore
+    @syncing
+    def savingsf(self) -> float:
+        '''float: Отформатированное в миллионы число сбережений'''
+        num = int(self.savings().split()[0])
+        return num * 1000 / 1000000
 
 
     @property # type: ignore

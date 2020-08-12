@@ -44,8 +44,8 @@ gvapi
 
 .. |requirements| image:: https://img.shields.io/badge/requirements-requests%20%26%20click-blue?style=flat
 
-.. |doc| image:: https://readthedocs.org/projects/gvapi/badge/?version=latest
-   :target: https://gvapi.readthedocs.io/ru/latest/?badge=latest
+.. |doc| image:: https://readthedocs.org/projects/gvapi/badge/?version=stable
+   :target: https://gvapi.readthedocs.io/ru/latest/?badge=stable
    :alt: Documentation Status
 
 .. |version| image:: https://badge.fury.io/py/gvapi.svg

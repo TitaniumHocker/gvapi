@@ -94,9 +94,10 @@ def test_top_attributes(mocked_get_top, monkeypatch):
     hero = Hero('Mars')
     data = mocked_get_top().json()
 
-    def dparse(ds):
-        zone = ds[-6::]
-        return datetime.strptime(ds.replace(zone, zone.replace(':', '')),
+    def dparse(date_string: str) -> datetime:
+        '''parse date string to datetime object'''
+        time_zone = date_string[-6::]
+        return datetime.strptime(date_string.replace(time_zone, time_zone.replace(':', '')),
                                  '%Y-%m-%dT%H:%M:%S%z')
 
     assert hero.savings == '30000 тысяч'

@@ -34,7 +34,7 @@ def tokenized(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
             в случае, если производится обращение к атрибуту, доступнопу только при использовании
             токена, без использования токена.
 
-        :py:class:`~gvapi.errors.TokenWasResetted`
+        :py:class:`~gvapi.errors.InvalidToken`
             в случае, если токен был сброшен.
         '''
     @wraps(func)
@@ -43,6 +43,6 @@ def tokenized(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
             raise errors.NeedToken('Для доступа к данному атрибуту необходим токен. '
                                    'Получить токен: https://godville.net/user/profile')
         if 'health' not in self.data.keys():
-            raise errors.InvalidToken('Токен не действителен или был сброшен. Необходимо обновить.')
+            raise errors.InvalidToken(self.token)
         return func(self, *args, **kwargs)
     return wrapper
