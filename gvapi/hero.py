@@ -376,6 +376,14 @@ class Hero:
 
     @property # type: ignore
     @syncing
+    def savingsf(self) -> float:
+        '''float: Отформатированное в миллионы число сбережений'''
+        num = int(self.savings().split()[0])
+        return num * 1000 / 1000000
+
+
+    @property # type: ignore
+    @syncing
     def t_level(self) -> int:
         '''int: Троговый уровень.'''
         if not self.data.get('savings_completed_at', None):
