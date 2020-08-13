@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
+"""В данном модуле расположены всякие штучки, в часности декораторы необходимые
+для корректной работы классов :class:`~gvapi.Hero` и :class:`~gvapi.Pet`"""
 from typing import Callable, Any
 from functools import wraps
 from gvapi import errors
 
 
 def syncing(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
-    '''Декоратор для принудительной синхронизации при вызове метода.
+    """Декоратор для принудительной синхронизации при вызове метода.
 
-    Args:
-        func (func): Декорируемая функция.
+    При вызове метода, обернутого в данный декоратор, произойдет
+    принудительный вызов метода `sync` класса переданного метода.
 
-    Returns:
-        func : Функция, обернутая в декоратор.
-    '''
+    :param func: декорируемый метод
+    :return: метод, обернутый в декоратор"""
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         self.sync()
@@ -21,22 +22,18 @@ def syncing(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
 
 
 def tokenized(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
-    '''Декоратор для метода, требующего использования токена.
+    """Декоратор для метода, требующего использования токена.
 
-    Args:
-        func (func): Декорируемая функция.
+    При вызове метода, обернутого в данный декоратор, произойдет
+    проверка на наличие токена в классе переданного метода.
 
-    Returns:
-        func : Функция, обернутая в декоратор.
-
-    Raises:
-        :py:class:`~gvapi.errors.NeedToken`
-            в случае, если производится обращение к атрибуту, доступнопу только при использовании
-            токена, без использования токена.
-
-        :py:class:`~gvapi.errors.InvalidToken`
-            в случае, если токен был сброшен.
-        '''
+    :param func: декорируемый метод
+    :raises :class:`~gvapi.errors.NeedToken`: в случае, елси
+        производится обращение к атрибуту, доступному только
+        при использовании токена, без использования токена
+    :raises :class:`~gvapi.errors.InvalidToken`: в случае,
+        если токен невалиден или был сброшен
+    :raturn: метод, обернутый в декоратор"""
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         if not self.token:

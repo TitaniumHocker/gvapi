@@ -2,13 +2,14 @@
 
 
 class Pet:
-    '''Класс питомца
+    """Класс питомца
 
-    Данный класс описывает питомца.
+    Питомец героя, может существовать только как
+    один из атрибутов героя.
 
-    Args:
-        hero (:py:class:`~gvapi.hero.Hero`): Экземпляр класса героя, которому принадлежит
-            данный питомец.'''
+    :param hero: экземпляр класса героя, которому
+        принадлежит данный питомец
+    :type hero: :class:`~gvapi.hero.Hero`"""
     def __init__(self, hero):
         self.__hero = hero
 
@@ -23,23 +24,23 @@ class Pet:
 
     @property
     def name(self) -> str:
-        '''str: Имя питомца.'''
+        """str: Имя питомца."""
         return self.__hero.data['pet']['pet_name']
 
 
     @property
     def class_name(self) -> str:
-        '''str: Вид питомца.'''
+        """str: Вид питомца."""
         return self.__hero.data['pet']['pet_class']
 
 
     @property
     def level(self) -> int:
-        '''int: Уровень питомца.'''
+        """int: Уровень питомца."""
         return self.__hero.data['pet']['pet_level']
 
 
     @property
     def wounded(self) -> bool:
-        '''bool: Контужен ли питомец.'''
+        """bool: Контужен ли питомец."""
         return self.__hero.data['pet'].get('wounded', False)

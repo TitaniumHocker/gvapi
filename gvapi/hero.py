@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+"""Основной модуль пакета, в котором описан класс `Hero`"""
 from typing import Dict, List, Tuple
 from urllib.parse import quote
 from datetime import datetime
@@ -11,27 +12,21 @@ from gvapi.pet import Pet
 
 
 class Hero:
-    '''Основной класс пакета.
+    """Герой игры Годвилль
 
     Через данный класс осуществляется доступ к данным героя.
 
-    Attributes:
-        god (str): Имя бога.
-        base_url (str): URL для доступа к API.
-        data (dict): Словарь с последними полученными данными.
-        pet (:py:class:`~gvapi.pet.Pet`): Экземпляр класса `Pet`, описывающий питомца.
-
-    Arguments:
-        god (str): Имя бога.
-        token (str, optional): Токен для доступа к API. Если не указан,
-            то обращение производится к открытому API.
-        api_url (str, optional): URL для доступа к API. Если не указан,
-            то используется `https://godville.net/gods/api`.
-        threshold (int, optional): Задержка обновления данных о герое в секундах,
-            по умолчанию 300 секунд или 5 минут. Данный параметр не может быть меньше 60(1 минута).
-    '''
-    def __init__(self, god: str, token: str = None, api_url: str = 'https://godville.net/gods/api',
-                 threshold: int = 300):
+    :param god: Имя божества героя
+    :param token: Токен для доступа к API, optional
+    :param api_url: URL для доступа к API, optional
+    :param threshold: Задержка обновления данных о герое в секундах, optional"""
+    def __init__(
+            self,
+            god: str,
+            token: str = None,
+            api_url: str = 'https://godville.net/gods/api',
+            threshold: int = 300
+    ):
         if threshold < 60:
             raise errors.MinThresholdException('Параметр threshold не может быть меньше 60 секунд.')
         self.__token = token
@@ -56,30 +51,30 @@ class Hero:
 
     @property
     def last_upd(self) -> datetime:
-        ''':py:class:`datetime`: Время последнего обновления данных.'''
+        """:py:class:`datetime`: Время последнего обновления данных."""
         return self.__last_upd
 
 
     @property
     def lock(self) -> bool:
-        '''bool: Заблокированы ли запросы к API.'''
+        """bool: Заблокированы ли запросы к API."""
         return self.__lock
 
 
     def sync(self) -> None:
-        '''Синхронизировать данные
+        """Синхронизировать данные
 
         Произвести синхронизацию данных.
         Синхронизация производится только в случае если прошла
         задержка обновления данных(`threshold`).
-        '''
+        """
         if self.from_last_updated > self.threshold and not self.lock:
             self.data = self.__get_data()
             self.__last_upd = datetime.now()
 
 
     def __get_data(self) -> Dict:
-        '''Получить данные.
+        """Получить данные.
 
         Произвести обращение к API для получения данных о герое.
 
@@ -92,7 +87,7 @@ class Hero:
 
             :py:class:`~gvapi.errors.UnexpectedAPIResponse`
                 в случае получения неожиданного ответа от API.
-        '''
+        """
         self.__lock = True
 
         if self.__token:
@@ -122,7 +117,7 @@ class Hero:
 
     @property
     def threshold(self) -> int:
-        '''int: Задержка обновления данных о герое в секундах.'''
+        """int: Задержка обновления данных о герое в секундах."""
         return self.__threshold
 
 
@@ -135,14 +130,14 @@ class Hero:
 
     @property
     def from_last_updated(self) -> int:
-        '''int: Количество секунд, прошедших с последнего обновления данных.'''
+        """int: Количество секунд, прошедших с последнего обновления данных."""
         return int(datetime.now().timestamp() - self.__last_upd.timestamp())
 
 
     @property
     def token(self) -> str:
-        '''str: Токен в защищенном формате(не скрыты только последние 4 символа).
-            Если токен не используется, то возвращает `None`'''
+        """str: Токен в защищенном формате(не скрыты только последние 4 символа).
+            Если токен не используется, то возвращает `None`"""
         if not self.__token:
             return ''
         return '{}{}'.format('*' * len(self.__token[:-4:]), self.__token[-4::])
@@ -151,14 +146,14 @@ class Hero:
     @property # type: ignore
     @syncing
     def name(self) -> str:
-        '''str: Имя героя.'''
+        """str: Имя героя."""
         return self.data['name']
 
 
     @property # type: ignore
     @syncing
     def gender(self) -> str:
-        '''str: Пол героя.'''
+        """str: Пол героя."""
         return 'муж' if self.data['gender'] == 'male' else 'жен'
 
 
@@ -166,7 +161,7 @@ class Hero:
     @syncing
     @tokenized
     def is_alive(self) -> bool:
-        '''bool: Жив ли герой.'''
+        """bool: Жив ли герой."""
         return self.health > 0
 
 
@@ -174,14 +169,14 @@ class Hero:
     @syncing
     @tokenized
     def health(self) -> int:
-        '''int: Количество очков здоровья героя.'''
+        """int: Количество очков здоровья героя."""
         return self.data['health']
 
 
     @property # type: ignore
     @syncing
     def max_health(self) -> int:
-        '''int: Максимальное количество очков здоровья героя.'''
+        """int: Максимальное количество очков здоровья героя."""
         return self.data['max_health']
 
 
@@ -189,7 +184,7 @@ class Hero:
     @syncing
     @tokenized
     def health_percent(self) -> float:
-        '''float: Количество очков здоровья героя в процентах.'''
+        """float: Количество очков здоровья героя в процентах."""
         return self.health / self.max_health
 
 
@@ -197,7 +192,7 @@ class Hero:
     @syncing
     @tokenized
     def gold(self) -> str:
-        '''str: Примерное количество золота.'''
+        """str: Примерное количество золота."""
         return self.data['gold_approx']
 
 
@@ -205,7 +200,7 @@ class Hero:
     @syncing
     @tokenized
     def goldf(self) -> float:
-        '''float: Приверное количество золота, отформатированное в тысячи.'''
+        """float: Приверное количество золота, отформатированное в тысячи."""
         words = self.gold.split()[1::]
         mul = 1 if words[-1].startswith('тыс') else 0.1
         if len(words) == 1:
@@ -218,7 +213,7 @@ class Hero:
     @syncing
     @tokenized
     def activatables(self) -> List:
-        '''list: Список активируемых предметов.'''
+        """list: Список активируемых предметов."""
         return self.data['activatables']
 
 
@@ -226,7 +221,7 @@ class Hero:
     @syncing
     @tokenized
     def is_fighting(self) -> bool:
-        '''bool: Находится ли герой в бою(арена, босс, заплыв, подземка).'''
+        """bool: Находится ли герой в бою(арена, босс, заплыв, подземка)."""
         return self.data['arena_fight']
 
 
@@ -234,7 +229,7 @@ class Hero:
     @syncing
     @tokenized
     def fight_type(self) -> str:
-        '''str: Тип боя'''
+        """str: Тип боя"""
         return self.data['fight_type'] if self.is_fighting else ''
 
 
@@ -242,7 +237,7 @@ class Hero:
     @syncing
     @tokenized
     def aura(self) -> str:
-        '''str: Аура, если отсутствует - пустая строка'''
+        """str: Аура, если отсутствует - пустая строка"""
         return self.data.get('aura', '')
 
 
@@ -250,7 +245,7 @@ class Hero:
     @syncing
     @tokenized
     def diary_last(self) -> str:
-        '''str: Последняя запись в дневнике.'''
+        """str: Последняя запись в дневнике."""
         return self.data['diary_last']
 
 
@@ -258,7 +253,7 @@ class Hero:
     @syncing
     @tokenized
     def distance(self) -> int:
-        '''int: Дистанция до столицы, при нахождении в любом городе - 0.'''
+        """int: Дистанция до столицы, при нахождении в любом городе - 0."""
         return self.data['distance']
 
 
@@ -266,7 +261,7 @@ class Hero:
     @syncing
     @tokenized
     def exp(self) -> int:
-        '''int: Прогресс опыта.'''
+        """int: Прогресс опыта."""
         return self.data['exp_progress']
 
 
@@ -274,7 +269,7 @@ class Hero:
     @syncing
     @tokenized
     def expired(self) -> bool:
-        '''bool: Флаг актуальности данных, True в случае, когда данные неакутальны.'''
+        """bool: Флаг актуальности данных, True в случае, когда данные неакутальны."""
         return self.data.get('expired', False)
 
 
@@ -282,14 +277,14 @@ class Hero:
     @syncing
     @tokenized
     def godpower(self) -> int:
-        '''int: Количество праны.'''
+        """int: Количество праны."""
         return self.data['godpower']
 
 
     @property # type: ignore
     @syncing
     def max_godpower(self) -> int:
-        '''int: Максимальное количество праны.'''
+        """int: Максимальное количество праны."""
         return 200 if self.data.get('savings_completed_at', None) else 100
 
 
@@ -297,7 +292,7 @@ class Hero:
     @syncing
     @tokenized
     def godpower_percent(self) -> int:
-        '''int: Количество праны в процентах.'''
+        """int: Количество праны в процентах."""
         return self.godpower / self.max_godpower
 
 
@@ -305,14 +300,14 @@ class Hero:
     @syncing
     @tokenized
     def inventory_num(self) -> int:
-        '''int: Количество предметов в инвентаре.'''
+        """int: Количество предметов в инвентаре."""
         return self.data['inventory_num']
 
 
     @property # type: ignore
     @syncing
     def inventory_max_num(self) -> int:
-        '''int: Максимальное количество предметов в инвентаре.'''
+        """int: Максимальное количество предметов в инвентаре."""
         return self.data['inventory_max_num']
 
 
@@ -320,8 +315,8 @@ class Hero:
     @syncing
     @tokenized
     def inventory(self) -> Tuple:
-        '''tuple: Корнеж из количества предметов в инвентаре, максимального количества предметов
-            и количества активируемых предметов.'''
+        """tuple: Корнеж из количества предметов в инвентаре, максимального количества предметов
+            и количества активируемых предметов."""
         return (self.inventory_num, self.inventory_max_num, self.activatables)
 
 
@@ -329,7 +324,7 @@ class Hero:
     @syncing
     @tokenized
     def quest_progress(self) -> float:
-        '''float: Процесс выполнения задания в процентах.'''
+        """float: Процесс выполнения задания в процентах."""
         return self.data.get('quest_progress', 0.0)
 
 
@@ -337,7 +332,7 @@ class Hero:
     @syncing
     @tokenized
     def quest(self) -> str:
-        '''str: Текст текущего задания.'''
+        """str: Текст текущего задания."""
         return self.data.get('quest', '')
 
 
@@ -345,21 +340,21 @@ class Hero:
     @syncing
     @tokenized
     def town_name(self) -> str:
-        '''str: Имя города, пустая строка если в поле или в бою.'''
+        """str: Имя города, пустая строка если в поле или в бою."""
         return self.data.get('town_name', '')
 
 
     @property # type: ignore
     @syncing
     def words(self) -> int:
-        '''int: Количество слов в книге.'''
+        """int: Количество слов в книге."""
         return self.data.get('words', 0)
 
 
     @property # type: ignore
     @syncing
     def ark(self) -> Tuple[int, int]:
-        '''tuple: Число тварей(ж, м)'''
+        """tuple: Число тварей(ж, м)"""
         if not self.data.get('ark_f', None):
             raise errors.TheTempleIsUndone('Храм еще не достроен')
         return (self.data['ark_f'], self.data['ark_m'])
@@ -368,7 +363,7 @@ class Hero:
     @property # type: ignore
     @syncing
     def savings(self) -> str:
-        '''str: Примерное число сбережений.'''
+        """str: Примерное число сбережений."""
         if not self.data.get('temple_completed_at', None):
             raise errors.TheTempleIsUndone('Храм еще не построен.')
         return self.data['savings']
@@ -377,7 +372,7 @@ class Hero:
     @property # type: ignore
     @syncing
     def savingsf(self) -> float:
-        '''float: Отформатированное в миллионы число сбережений'''
+        """float: Отформатированное в миллионы число сбережений"""
         num = int(self.savings().split()[0])
         return num * 1000 / 1000000
 
@@ -385,7 +380,7 @@ class Hero:
     @property # type: ignore
     @syncing
     def t_level(self) -> int:
-        '''int: Троговый уровень.'''
+        """int: Троговый уровень."""
         if not self.data.get('savings_completed_at', None):
             raise errors.TheSavingsInUndone('Пенсия еще не собрана.')
         return self.data.get('t_level', 0)
@@ -394,14 +389,14 @@ class Hero:
     @property # type: ignore
     @syncing
     def arena(self) -> Tuple[int, int]:
-        '''tuple: число побед и поражений на арене.'''
+        """tuple: число побед и поражений на арене."""
         return (self.data['arena_won'], self.data['arena_lost'])
 
 
     @property # type: ignore
     @syncing
     def ark_completed_at(self) -> datetime:
-        '''str: Дата постройки ковчега.'''
+        """str: Дата постройки ковчега."""
         if not self.data.get('ark_completed_at', None):
             raise errors.TheArkIsUndone('Ковчег еще не построен.')
         date_s = self.data['ark_completed_at']
@@ -413,56 +408,56 @@ class Hero:
     @property # type: ignore
     @syncing
     def alignment(self) -> str:
-        '''str: Характер героя.'''
+        """str: Характер героя."""
         return self.data['alignment']
 
 
     @property # type: ignore
     @syncing
     def bricks(self) -> int:
-        '''int: Число кирпичей для храма.'''
+        """int: Число кирпичей для храма."""
         return self.data['bricks_cnt']
 
 
     @property # type: ignore
     @syncing
     def bricks_percent(self) -> float:
-        '''float: Число кирпичей для храма в процентах.'''
+        """float: Число кирпичей для храма в процентах."""
         return self.data['bricks_cnt'] / 1000 * 100
 
 
     @property # type: ignore
     @syncing
     def clan(self) -> str:
-        '''str: Название гильдии героя.'''
+        """str: Название гильдии героя."""
         return self.data['clan']
 
 
     @property # type: ignore
     @syncing
     def clan_pos(self) -> str:
-        '''str: Ранг героя в гильдии.'''
+        """str: Ранг героя в гильдии."""
         return self.data['clan_position']
 
 
     @property # type: ignore
     @syncing
     def level(self) -> int:
-        '''int: Уровень героя.'''
+        """int: Уровень героя."""
         return self.data['level']
 
 
     @property # type: ignore
     @syncing
     def motto(self) -> str:
-        '''str: Девиз героя.'''
+        """str: Девиз героя."""
         return self.data.get('motto', '')
 
 
     @property # type: ignore
     @syncing
     def savings_completed_at(self) -> datetime:
-        '''str: Дата окончания сбора пенсии.'''
+        """str: Дата окончания сбора пенсии."""
         if not self.data.get('savings_completed_at', None):
             raise errors.TheSavingsInUndone('Сбережения еще не собраны.')
         date_s = self.data['savings_completed_at']
@@ -474,7 +469,7 @@ class Hero:
     @property # type: ignore
     @syncing
     def shop_name(self) -> str:
-        '''str: Название лавки, только у пенсионеров.'''
+        """str: Название лавки, только у пенсионеров."""
         if not self.data.get('savings_completed_at', None):
             raise errors.TheSavingsInUndone('Сбережения еще не собраны.')
         return self.data.get('shop_name', '')
@@ -483,7 +478,7 @@ class Hero:
     @property # type: ignore
     @syncing
     def temple_completed_at(self) -> datetime:
-        '''str: Когда был достроен храм.'''
+        """str: Когда был достроен храм."""
         if not self.data.get('temple_completed_at', None):
             raise errors.TheTempleIsUndone('Храм еще не построен.')
         date_s = self.data['temple_completed_at']
@@ -495,7 +490,7 @@ class Hero:
     @property # type: ignore
     @syncing
     def wood_count(self) -> int:
-        '''int: Количество поленьев.'''
+        """int: Количество поленьев."""
         if not self.data.get('temple_completed_at', None):
             raise errors.TheTempleIsUndone('Храм еще не построен.')
         return self.data['wood_cnt']
@@ -504,12 +499,12 @@ class Hero:
     @property # type: ignore
     @syncing
     def boss_name(self) -> str:
-        '''str: Имя собранного в лаборатории босса.'''
+        """str: Имя собранного в лаборатории босса."""
         return self.data.get('boss_name', None)
 
 
     @property # type: ignore
     @syncing
     def boss_power(self) -> str:
-        '''str: Мощь собранного в лаборатории босса.'''
+        """str: Мощь собранного в лаборатории босса."""
         return self.data.get('boss_power', None)

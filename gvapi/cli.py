@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-'''Модуль, описывающий CLI-утилиту пакета gvapi'''
+"""Модуль, описывающий CLI-утилиту пакета gvapi"""
 import sys
 from os import environ
 from pathlib import Path
@@ -15,14 +15,14 @@ from gvapi import Hero, errors
 @click.option('--drop-cache', is_flag=True, default=False, help='Сбросить кэш при выполнении')
 @click.argument('property_name', required=True)
 def cli(god, token, drop_cache, property_name):
-    '''CLI-интерфейс для доступа к API игры Годвилль.
+    """CLI-интерфейс для доступа к API игры Годвилль.
 
     Аргументы:
 
         PROPERTY_NAME Имя свойства героя
 
     Полный список свойств и примеры использования данного
-    CLI-интерфейса можно получить в документации.'''
+    CLI-интерфейса можно получить в документации."""
     if not god:
         raise errors.GVAPIException('Не получено имя божества.')
 
