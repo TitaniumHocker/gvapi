@@ -22,7 +22,7 @@ copyright = '2020, Ivan Fedorov'
 author = 'Titanium Hocker(Ivan Fedorov)'
 
 # The full version, including alpha/beta/rc tags
-release = '0.6'
+release = '0.8'
 
 
 # -- General configuration ---------------------------------------------------

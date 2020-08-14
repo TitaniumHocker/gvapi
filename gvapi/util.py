@@ -29,12 +29,9 @@ def tokenized(func: Callable[[Any], Any]) -> Callable[[Any], Any]:
 
     :param func: декорируемый метод
     :return: метод, обернутый в декоратор
-
-    :raises :class:`~gvapi.errors.NeedToken`: в случае, если
-    производится обращение к атрибуту, доступному только
-    при использовании токена, без использования токена.
-    :raises :class:`~gvapi.errors.InvalidToken`: в случае,
-    если токен невалиден или был сброшен."""
+    :raises NeedToken: в случае, если производится обращение к атрибуту,
+        доступному только при использовании токена, без использования токена.
+    :raises InvalidToken: в случае, если токен невалиден или был сброшен."""
     @wraps(func)
     def wrapper(self, *args, **kwargs):
         if not self.token:

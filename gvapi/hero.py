@@ -78,16 +78,9 @@ class Hero:
 
         Произвести обращение к API для получения данных о герое.
 
-        Returns:
-            Словать с данными полученными от API.
-
-        Raises:
-            :py:class:`~gvapi.errors.APIUnavailable`
-                в случае недоступности API.
-
-            :py:class:`~gvapi.errors.UnexpectedAPIResponse`
-                в случае получения неожиданного ответа от API.
-        """
+        :return: словарь с данными, полученными от API
+        :raises `APIUnavailable`: в случае недоступности API
+        :raises `UnexpectedAPIResponse`: в случае получения неожиданного ответа от API"""
         self.__lock = True
 
         if self.__token:

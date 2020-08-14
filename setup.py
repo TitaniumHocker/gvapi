@@ -14,7 +14,7 @@ def read(filename):
 
 setup(
     name="gvapi",
-    version="0.6",
+    version="0.8",
     url="https://github.com/TitaniumHocker/gvapi",
     license="MIT",
 
